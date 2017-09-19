@@ -85,6 +85,13 @@ getChar(istream& istr)
       case INPUT_END_KEY:   // Ctrl-d
       case TAB_KEY:         // tab('\t') or Ctrl-i
       case NEWLINE_KEY:     // enter('\n') or ctrl-m
+      case BACK_SPACE_KEY: // 'delete' on mac
+      case HOME_KEY:
+      case INSERT_KEY:
+      case DELETE_KEY:
+      case END_KEY:
+      case PG_UP_KEY:
+      case PG_DOWN_KEY:
          return returnCh(ch);
 
       // TODO... Check and change if necessary!!!!!!
@@ -99,7 +106,24 @@ getChar(istream& istr)
       //
       // Combo keys: multiple codes for one key press
       // -- Usually starts with ESC key, so we check the "case ESC"
-      // case ESC_KEY:
+      case ESC_KEY: {
+        char ch2 = mygetc(istr);
+        if (ch2 == char(ARROW_KEY_INT)) {
+          char ch3 = mygetc(istr);
+          if (int(ch3 == 65)) {
+            return returnCh(ARROW_UP_KEY);
+          } else if (int(ch3) == 66) {
+            return returnCh(ARROW_DOWN_KEY);
+          } else if (int(ch3) == 67) {
+            return returnCh(ARROW_RIGHT_KEY);
+          } else if (int(ch3) == 68) {
+            return returnCh(ARROW_LEFT_KEY);
+          }
+        } else {
+          mybeep();
+          return getChar(istr);
+        }
+      }
 
       // For the remaining printable and undefined keys
       default:
@@ -212,4 +236,3 @@ returnCh(int ch)
    }
 #endif
 }
-
